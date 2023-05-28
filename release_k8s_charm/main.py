@@ -13,6 +13,11 @@ def parse_arguments():
         required=True,
         help="Path to charm's metadata.yaml",
     )
+    parser.add_argument(
+        "--channel",
+        required=True,
+        help="Channel to release the packed, uploaded charm on",
+    )
     return parser.parse_args()
 
 
@@ -155,7 +160,7 @@ def upload_charm(charm_path):
                 return line.split()[1]
 
 
-def release_charm(charm_name, charm_revision, resource_revisions):
+def release_charm(charm_name, charm_revision, resource_revisions, channel):
     release_command = subprocess.run(
         [
             "charmcraft",
@@ -163,7 +168,7 @@ def release_charm(charm_name, charm_revision, resource_revisions):
             charm_name,
             "--revision",
             charm_revision,
-            "--channel=beta",
+            f"--channel={channel}",
         ]
         + [f"--resource={rr}" for rr in resource_revisions],
         check=True,
@@ -182,7 +187,7 @@ def main():
     resources = metadata.get("resources", {})
     resource_revisions = process_resources(resources, charm_name)
     charm_revision = upload_charm(charm_file)
-    release_charm(charm_name, charm_revision, resource_revisions)
+    release_charm(charm_name, charm_revision, resource_revisions, args.channel)
 
 
 if __name__ == "__main__":
