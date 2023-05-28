@@ -1,0 +1,28 @@
+name: release-k8s-charm
+base: core22
+
+version: "1.0"
+summary: A tool to ease releasing Kubernetes operator charms to charmhub
+description: |
+  A charmhub release creation utility for Kubernetes operator charms: uploads the OCI images, uploads the charm, then releases.
+
+grade: stable
+confinement: strict
+architectures:
+  - amd64
+  - arm64
+
+apps:
+  release-k8s-charm:
+    command: release-k8s-charm
+    plugs: [home, network]
+
+parts:
+  release-k8s-charm:
+    plugin: dump
+    source: .
+    source-type: local
+    override-build: |
+      cp release_k8s_charm/main.py $SNAPCRAFT_PART_INSTALL/release-k8s-charm
+    stage-packages:
+      - python3-yaml

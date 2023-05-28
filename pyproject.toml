@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "release-k8s-charm"
+version = "0.1.0"
+description = ""
+authors = ["Matias Piipari <matias.piipari@gmail.com>"]
+packages = [{include = "release_k8s_charm"}]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+ruff = "^0.0.270"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
