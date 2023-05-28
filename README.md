@@ -11,4 +11,7 @@ options:
   -h, --help            show this help message and exit
   --charm-metadata CHARM_METADATA
                         Path to charm's metadata.yaml
+  --channel CHANNEL     Channel to release the packed, uploaded charm on
 ```
+
+**_NOTE:_** If you have GitHub for source control and CI, you should probably use the [canonical/charming-actions GitHub actions](https://github.com/canonical/charming-actions) instead of this tool.

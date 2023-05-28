@@ -8,6 +8,8 @@ description: |
 
   Usage: `release-k8s-charm --charm-metadata [path-to-charm-metadata.yaml]`
 
+  If you have GitHub for source control and CI, you should probably use the [canonical/charming-actions GitHub actions](https://github.com/canonical/charming-actions) instead of this tool.
+
 grade: stable
 confinement: strict
 architectures:
