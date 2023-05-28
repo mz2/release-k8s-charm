@@ -4,7 +4,7 @@ base: core22
 version: "1.0"
 summary: A tool to ease releasing Kubernetes operator charms to charmhub
 description: |
-  A charmhub release creation utility for Kubernetes operator charms: uploads the OCI image to Canonical's OCI registry, uploads the charm, releases.
+  A charmhub release creation utility for Kubernetes operator charms: packs the charm, uploads the OCI images for the charm to Canonical's OCI registry, uploads the charm, releases.
 
   Usage: `release-k8s-charm --charm-metadata [path-to-charm-metadata.yaml]`
 

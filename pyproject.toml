@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "release-k8s-charm"
 version = "0.1.0"
-description = ""
+description = "A utility for releasing K8s charms conveniently"
 authors = ["Matias Piipari <matias.piipari@gmail.com>"]
 packages = [{include = "release_k8s_charm"}]
 
