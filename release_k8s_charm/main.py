@@ -7,22 +7,49 @@ import subprocess
 import yaml
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--charm-path", required=True)
+parser.add_argument(
+    "--charm-metadata",
+    required=True,
+    help="Path to charm's metadata.yaml",
+)
 
 args = parser.parse_args()
 
-charm_dir = os.path.dirname(args.charm_path)
-metadata_path = os.path.join(charm_dir, "metadata.yaml")
-charm_name = os.path.basename(args.charm_path).split("_")[0]
+metadata_path = args.charm_metadata
+charm_dir = os.path.dirname(metadata_path)
 
 with open(metadata_path, "r") as stream:
     try:
-        data = yaml.safe_load(stream)
+        metadata = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
         print(exc)
         exit(1)
 
-resources = data.get("resources", {})
+charm_name = metadata.get("name")
+if not charm_name:
+    print("Charm name not found in metadata.")
+    exit(1)
+
+pack_command = subprocess.run(
+    ["charmcraft", "pack"], cwd=charm_dir, check=True, capture_output=True, text=True
+)
+if pack_command.returncode != 0:
+    exit(pack_command.returncode)
+
+output_lines = pack_command.stdout.splitlines()
+charm_file = None
+for line in output_lines:
+    if line.endswith(".charm"):
+        charm_file = line.lstrip()
+        break
+
+if charm_file is None:
+    print("Evidently failed to pack the charm (or find the packed charm).")
+    exit(1)
+
+charm_path = os.path.join(charm_dir, charm_file)
+
+resources = metadata.get("resources", {})
 resource_revisions = []
 
 for resource_name, resource_data in resources.items():
@@ -89,7 +116,10 @@ for resource_name, resource_data in resources.items():
                 resource_revisions.append(f"{resource_name}:{resource_revision}")
 
 upload_charm_command = subprocess.run(
-    ["charmcraft", "upload", args.charm_path], check=True, capture_output=True, text=True
+    ["charmcraft", "upload", charm_path],
+    check=True,
+    capture_output=True,
+    text=True,
 )
 if upload_charm_command.returncode != 0:
     output_lines = upload_charm_command.stderr.splitlines()
@@ -103,7 +133,14 @@ else:
             charm_revision = line.split()[1]
 
 release_command = subprocess.run(
-    ["charmcraft", "release", charm_name, "--revision", charm_revision, "--channel=beta"]
+    [
+        "charmcraft",
+        "release",
+        charm_name,
+        "--revision",
+        charm_revision,
+        "--channel=beta",
+    ]
     + [f"--resource={rr}" for rr in resource_revisions],
     check=True,
 )
