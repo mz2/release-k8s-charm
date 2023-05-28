@@ -3,6 +3,7 @@
 A quick and dirty charmhub release creation utility for Kubernetes operator charms: packs the charm, uploads the OCI images, uploads the charm, then releases.
 
 ```bash
+❯ sudo snap install release-k8s-charm
 ❯ release-k8s-charm --help
 usage: release-k8s-charm [-h] --charm-metadata CHARM_METADATA
 
